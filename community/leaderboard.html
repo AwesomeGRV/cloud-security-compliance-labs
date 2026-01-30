@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Security Labs - Community Leaderboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .rank-1 { background: linear-gradient(135deg, #FFD700, #FFA500); }
+        .rank-2 { background: linear-gradient(135deg, #C0C0C0, #808080); }
+        .rank-3 { background: linear-gradient(135deg, #CD7F32, #8B4513); }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+        .achievement-badge {
+            transition: all 0.3s ease;
+        }
+        .achievement-badge:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+        .tab-active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <div class="flex items-center justify-center mb-4">
+                <i class="fas fa-trophy text-4xl text-yellow-400 mr-3"></i>
+                <h1 class="text-4xl font-bold text-white">Community Leaderboard</h1>
+            </div>
+            <p class="text-xl text-gray-200">Celebrating our amazing contributors and learners</p>
+        </header>
+
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="glass-effect rounded-xl p-6 text-center hover-scale">
+                <i class="fas fa-users text-3xl text-blue-400 mb-3"></i>
+                <div class="text-3xl font-bold text-white" id="totalContributors">156</div>
+                <div class="text-gray-200">Total Contributors</div>
+            </div>
+            <div class="glass-effect rounded-xl p-6 text-center hover-scale">
+                <i class="fas fa-code-branch text-3xl text-green-400 mb-3"></i>
+                <div class="text-3xl font-bold text-white" id="totalPRs">1,247</div>
+                <div class="text-gray-200">Pull Requests</div>
+            </div>
+            <div class="glass-effect rounded-xl p-6 text-center hover-scale">
+                <i class="fas fa-book text-3xl text-purple-400 mb-3"></i>
+                <div class="text-3xl font-bold text-white" id="totalLabs">52</div>
+                <div class="text-gray-200">Labs Completed</div>
+            </div>
+            <div class="glass-effect rounded-xl p-6 text-center hover-scale">
+                <i class="fas fa-star text-3xl text-yellow-400 mb-3"></i>
+                <div class="text-3xl font-bold text-white" id="totalStars">3,892</div>
+                <div class="text-gray-200">GitHub Stars</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex justify-center mb-8">
+            <div class="glass-effect rounded-full p-1 inline-flex">
+                <button class="tab-btn px-6 py-2 rounded-full text-white font-semibold tab-active" data-tab="contributors">
+                    <i class="fas fa-users mr-2"></i>Top Contributors
+                </button>
+                <button class="tab-btn px-6 py-2 rounded-full text-white font-semibold" data-tab="learners">
+                    <i class="fas fa-graduation-cap mr-2"></i>Top Learners
+                </button>
+                <button class="tab-btn px-6 py-2 rounded-full text-white font-semibold" data-tab="achievements">
+                    <i class="fas fa-medal mr-2"></i>Achievements
+                </button>
+            </div>
+        </div>
+
+        <!-- Contributors Tab -->
+        <div id="contributors-tab" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Top 3 Contributors -->
+                <div class="lg:col-span-1">
+                    <h3 class="text-2xl font-bold text-white mb-6">🏆 Top Contributors</h3>
+                    <div class="space-y-4">
+                        <!-- 1st Place -->
+                        <div class="glass-effect rounded-xl p-6 rank-1 text-white fade-in">
+                            <div class="flex items-center">
+                                <div class="text-4xl font-bold mr-4">1</div>
+                                <div class="flex-1">
+                                    <div class="flex items-center mb-2">
+                                        <img src="https://picsum.photos/seed/user1/40/40.jpg" alt="Avatar" class="w-10 h-10 rounded-full mr-3">
+                                        <div>
+                                            <div class="font-bold">Sarah Chen</div>
+                                            <div class="text-sm opacity-90">@sarahchen</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-2 text-sm">
+                                        <div>
+                                            <div class="font-bold">342</div>
+                                            <div class="opacity-90">Commits</div>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold">28</div>
+                                            <div class="opacity-90">PRs</div>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold">15</div>
+                                            <div class="opacity-90">Labs</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2nd Place -->
+                        <div class="glass-effect rounded-xl p-6 rank-2 text-white fade-in">
+                            <div class="flex items-center">
+                                <div class="text-4xl font-bold mr-4">2</div>
+                                <div class="flex-1">
+                                    <div class="flex items-center mb-2">
+                                        <img src="https://picsum.photos/seed/user2/40/40.jpg" alt="Avatar" class="w-10 h-10 rounded-full mr-3">
+                                        <div>
+                                            <div class="font-bold">Mike Johnson</div>
+                                            <div class="text-sm opacity-90">@mikej</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-2 text-sm">
+                                        <div>
+                                            <div class="font-bold">298</div>
+                                            <div class="opacity-90">Commits</div>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold">24</div>
+                                            <div class="opacity-90">PRs</div>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold">12</div>
+                                            <div class="opacity-90">Labs</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3rd Place -->
+                        <div class="glass-effect rounded-xl p-6 rank-3 text-white fade-in">
+                            <div class="flex items-center">
+                                <div class="text-4xl font-bold mr-4">3</div>
+                                <div class="flex-1">
+                                    <div class="flex items-center mb-2">
+                                        <img src="https://picsum.photos/seed/user3/40/40.jpg" alt="Avatar" class="w-10 h-10 rounded-full mr-3">
+                                        <div>
+                                            <div class="font-bold">Emily Davis</div>
+                                            <div class="text-sm opacity-90">@emilyd</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-2 text-sm">
+                                        <div>
+                                            <div class="font-bold">276</div>
+                                            <div class="opacity-90">Commits</div>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold">21</div>
+                                            <div class="opacity-90">PRs</div>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold">10</div>
+                                            <div class="opacity-90">Labs</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Full Leaderboard -->
+                <div class="lg:col-span-2">
+                    <h3 class="text-2xl font-bold text-white mb-6">📊 Full Leaderboard</h3>
+                    <div class="glass-effect rounded-xl p-6">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-white">
+                                <thead>
+                                    <tr class="border-b border-white/20">
+                                        <th class="text-left py-3 px-4">Rank</th>
+                                        <th class="text-left py-3 px-4">Contributor</th>
+                                        <th class="text-center py-3 px-4">Commits</th>
+                                        <th class="text-center py-3 px-4">PRs</th>
+                                        <th class="text-center py-3 px-4">Labs</th>
+                                        <th class="text-center py-3 px-4">Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="contributorsTable">
+                                    <!-- Table rows will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learners Tab -->
+        <div id="learners-tab" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Top Learners -->
+                <div>
+                    <h3 class="text-2xl font-bold text-white mb-6">🎓 Top Learners</h3>
+                    <div class="space-y-4" id="topLearners">
+                        <!-- Learner cards will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Learning Stats -->
+                <div>
+                    <h3 class="text-2xl font-bold text-white mb-6">📈 Learning Statistics</h3>
+                    <div class="glass-effect rounded-xl p-6">
+                        <div class="space-y-6">
+                            <div>
+                                <div class="flex justify-between text-white mb-2">
+                                    <span>Average Completion Rate</span>
+                                    <span>78%</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-3">
+                                    <div class="bg-gradient-to-r from-green-400 to-blue-500 h-3 rounded-full" style="width: 78%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-white mb-2">
+                                    <span>Lab Success Rate</span>
+                                    <span>85%</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-3">
+                                    <div class="bg-gradient-to-r from-purple-400 to-pink-500 h-3 rounded-full" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-white mb-2">
+                                    <span>Quiz Average Score</span>
+                                    <span>82%</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-3">
+                                    <div class="bg-gradient-to-r from-yellow-400 to-orange-500 h-3 rounded-full" style="width: 82%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Achievements Tab -->
+        <div id="achievements-tab" class="tab-content hidden">
+            <h3 class="text-2xl font-bold text-white mb-6">🏅 Recent Achievements</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="achievementsGrid">
+                <!-- Achievement cards will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Contribute CTA -->
+        <div class="mt-12 text-center">
+            <div class="glass-effect rounded-xl p-8 max-w-2xl mx-auto">
+                <i class="fas fa-rocket text-4xl text-blue-400 mb-4"></i>
+                <h3 class="text-2xl font-bold text-white mb-4">Join Our Community!</h3>
+                <p class="text-gray-200 mb-6">Contribute to cloud security education and earn your place on the leaderboard.</p>
+                <div class="flex justify-center space-x-4">
+                    <a href="https://github.com/AwesomeGRV/cloud-security-compliance-labs" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                        <i class="fab fa-github mr-2"></i>Contribute on GitHub
+                    </a>
+                    <a href="../CONTRIBUTING.md" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                        <i class="fas fa-book mr-2"></i>Read Guidelines
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for the leaderboard
+        const contributorsData = [
+            { rank: 1, name: 'Sarah Chen', username: '@sarahchen', commits: 342, prs: 28, labs: 15, score: 9850, avatar: 'user1' },
+            { rank: 2, name: 'Mike Johnson', username: '@mikej', commits: 298, prs: 24, labs: 12, score: 8920, avatar: 'user2' },
+            { rank: 3, name: 'Emily Davis', username: '@emilyd', commits: 276, prs: 21, labs: 10, score: 8450, avatar: 'user3' },
+            { rank: 4, name: 'Alex Kumar', username: '@alexk', commits: 234, prs: 18, labs: 8, score: 7230, avatar: 'user4' },
+            { rank: 5, name: 'Lisa Wang', username: '@lisaw', commits: 198, prs: 15, labs: 7, score: 6540, avatar: 'user5' },
+            { rank: 6, name: 'James Brown', username: '@jamesb', commits: 176, prs: 14, labs: 6, score: 5890, avatar: 'user6' },
+            { rank: 7, name: 'Maria Garcia', username: '@mariag', commits: 165, prs: 12, labs: 5, score: 5230, avatar: 'user7' },
+            { rank: 8, name: 'David Lee', username: '@davidl', commits: 154, prs: 11, labs: 4, score: 4670, avatar: 'user8' },
+            { rank: 9, name: 'Sophie Martin', username: '@sophiem', commits: 143, prs: 10, labs: 4, score: 4120, avatar: 'user9' },
+            { rank: 10, name: 'Ryan Taylor', username: '@ryant', commits: 132, prs: 9, labs: 3, score: 3680, avatar: 'user10' }
+        ];
+
+        const learnersData = [
+            { name: 'John Smith', labsCompleted: 45, quizScore: 94, streak: 28, avatar: 'learner1' },
+            { name: 'Anna Wilson', labsCompleted: 42, quizScore: 91, streak: 21, avatar: 'learner2' },
+            { name: 'Robert Chen', labsCompleted: 38, quizScore: 88, streak: 19, avatar: 'learner3' },
+            { name: 'Julia Martinez', labsCompleted: 35, quizScore: 86, streak: 17, avatar: 'learner4' },
+            { name: 'Thomas Anderson', labsCompleted: 32, quizScore: 84, streak: 15, avatar: 'learner5' }
+        ];
+
+        const achievementsData = [
+            { title: 'First Contribution', description: 'Made your first pull request', icon: 'fa-code-branch', color: 'blue', user: 'New Contributor', date: '2 hours ago' },
+            { title: 'Lab Master', description: 'Completed 25+ labs', icon: 'fa-flask', color: 'green', user: 'John Smith', date: '5 hours ago' },
+            { title: 'Quiz Champion', description: 'Scored 100% on 5 quizzes', icon: 'fa-trophy', color: 'yellow', user: 'Anna Wilson', date: '1 day ago' },
+            { title: 'Bug Hunter', description: 'Found and fixed 10 bugs', icon: 'fa-bug', color: 'red', user: 'Mike Johnson', date: '2 days ago' },
+            { title: 'Documentation Hero', description: 'Improved 50+ documentation pages', icon: 'fa-book', color: 'purple', user: 'Emily Davis', date: '3 days ago' },
+            { title: 'Security Expert', description: 'Completed all security labs', icon: 'fa-shield-alt', color: 'indigo', user: 'Alex Kumar', date: '4 days ago' }
+        ];
+
+        // Initialize the leaderboard
+        document.addEventListener('DOMContentLoaded', function() {
+            populateContributorsTable();
+            populateTopLearners();
+            populateAchievements();
+            setupTabSwitching();
+            animateCounters();
+        });
+
+        function populateContributorsTable() {
+            const tbody = document.getElementById('contributorsTable');
+            tbody.innerHTML = '';
+
+            contributorsData.forEach((contributor, index) => {
+                const row = document.createElement('tr');
+                row.className = 'border-b border-white/10 hover:bg-white/5 transition-colors fade-in';
+                row.style.animationDelay = `${index * 0.1}s`;
+                
+                row.innerHTML = `
+                    <td class="py-3 px-4">
+                        <span class="font-bold ${contributor.rank <= 3 ? 'text-yellow-400' : ''}">#${contributor.rank}</span>
+                    </td>
+                    <td class="py-3 px-4">
+                        <div class="flex items-center">
+                            <img src="https://picsum.photos/seed/${contributor.avatar}/32/32.jpg" alt="Avatar" class="w-8 h-8 rounded-full mr-3">
+                            <div>
+                                <div class="font-semibold">${contributor.name}</div>
+                                <div class="text-sm opacity-75">${contributor.username}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-3 px-4 text-center">${contributor.commits}</td>
+                    <td class="py-3 px-4 text-center">${contributor.prs}</td>
+                    <td class="py-3 px-4 text-center">${contributor.labs}</td>
+                    <td class="py-3 px-4 text-center">
+                        <span class="bg-gradient-to-r from-blue-500 to-purple-500 px-3 py-1 rounded-full text-sm font-semibold">
+                            ${contributor.score.toLocaleString()}
+                        </span>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        function populateTopLearners() {
+            const container = document.getElementById('topLearners');
+            container.innerHTML = '';
+
+            learnersData.forEach((learner, index) => {
+                const card = document.createElement('div');
+                card.className = 'glass-effect rounded-xl p-6 hover-scale fade-in';
+                card.style.animationDelay = `${index * 0.1}s`;
+                
+                card.innerHTML = `
+                    <div class="flex items-center mb-4">
+                        <img src="https://picsum.photos/seed/${learner.avatar}/48/48.jpg" alt="Avatar" class="w-12 h-12 rounded-full mr-4">
+                        <div class="flex-1">
+                            <div class="font-bold text-white text-lg">${learner.name}</div>
+                            <div class="text-gray-300">Top Learner #${index + 1}</div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div>
+                            <div class="text-2xl font-bold text-blue-400">${learner.labsCompleted}</div>
+                            <div class="text-sm text-gray-300">Labs</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-green-400">${learner.quizScore}%</div>
+                            <div class="text-sm text-gray-300">Quiz Score</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-orange-400">${learner.streak}</div>
+                            <div class="text-sm text-gray-300">Day Streak</div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        function populateAchievements() {
+            const grid = document.getElementById('achievementsGrid');
+            grid.innerHTML = '';
+
+            achievementsData.forEach((achievement, index) => {
+                const card = document.createElement('div');
+                card.className = 'glass-effect rounded-xl p-6 achievement-badge fade-in';
+                card.style.animationDelay = `${index * 0.1}s`;
+                
+                const colorClasses = {
+                    blue: 'text-blue-400 bg-blue-400/20',
+                    green: 'text-green-400 bg-green-400/20',
+                    yellow: 'text-yellow-400 bg-yellow-400/20',
+                    red: 'text-red-400 bg-red-400/20',
+                    purple: 'text-purple-400 bg-purple-400/20',
+                    indigo: 'text-indigo-400 bg-indigo-400/20'
+                };
+                
+                card.innerHTML = `
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full ${colorClasses[achievement.color]} flex items-center justify-center mr-4">
+                            <i class="fas ${achievement.icon} text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-bold text-white">${achievement.title}</div>
+                            <div class="text-sm text-gray-300">${achievement.description}</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-gray-300">${achievement.user}</span>
+                        <span class="text-gray-400">${achievement.date}</span>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        function setupTabSwitching() {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetTab = button.dataset.tab;
+                    
+                    // Update button states
+                    tabButtons.forEach(btn => btn.classList.remove('tab-active'));
+                    button.classList.add('tab-active');
+                    
+                    // Update content visibility
+                    tabContents.forEach(content => content.classList.add('hidden'));
+                    document.getElementById(`${targetTab}-tab`).classList.remove('hidden');
+                });
+            });
+        }
+
+        function animateCounters() {
+            const counters = [
+                { id: 'totalContributors', target: 156, duration: 2000 },
+                { id: 'totalPRs', target: 1247, duration: 2500 },
+                { id: 'totalLabs', target: 52, duration: 1500 },
+                { id: 'totalStars', target: 3892, duration: 3000 }
+            ];
+
+            counters.forEach(counter => {
+                const element = document.getElementById(counter.id);
+                const increment = counter.target / (counter.duration / 16);
+                let current = 0;
+
+                const updateCounter = () => {
+                    current += increment;
+                    if (current < counter.target) {
+                        element.textContent = Math.floor(current).toLocaleString();
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        element.textContent = counter.target.toLocaleString();
+                    }
+                };
+
+                updateCounter();
+            });
+        }
+    </script>
+</body>
+</html>

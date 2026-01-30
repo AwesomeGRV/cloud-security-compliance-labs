@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Security Labs - Interactive Quiz System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .quiz-option {
+            transition: all 0.3s ease;
+        }
+        .quiz-option:hover {
+            transform: translateX(5px);
+        }
+        .quiz-option.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .quiz-option.correct {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        .quiz-option.incorrect {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            color: white;
+        }
+        .progress-bar {
+            transition: width 0.5s ease;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 min-h-screen">
+    <div id="app" class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <div class="flex items-center justify-center mb-4">
+                <i class="fas fa-shield-alt text-4xl text-white mr-3"></i>
+                <h1 class="text-4xl font-bold text-white">Cloud Security Labs</h1>
+            </div>
+            <p class="text-xl text-gray-200">Interactive Quiz System</p>
+        </header>
+
+        <!-- Quiz Selection -->
+        <div id="quizSelection" class="max-w-4xl mx-auto">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-white mb-4">Choose Your Quiz</h2>
+                <p class="text-gray-200">Test your knowledge across different cloud security domains</p>
+            </div>
+            
+            <div id="quizList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Quiz cards will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <!-- Quiz Interface -->
+        <div id="quizInterface" class="max-w-4xl mx-auto hidden">
+            <!-- Progress Bar -->
+            <div class="mb-8">
+                <div class="flex justify-between text-white mb-2">
+                    <span id="progressText">Question 1 of 5</span>
+                    <span id="scoreText">Score: 0%</span>
+                </div>
+                <div class="w-full bg-gray-700 rounded-full h-3">
+                    <div id="progressBar" class="progress-bar bg-gradient-to-r from-green-400 to-blue-500 h-3 rounded-full" style="width: 20%"></div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="glass-effect rounded-xl p-8 mb-6 fade-in">
+                <div class="flex items-center mb-6">
+                    <span id="questionNumber" class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-semibold mr-3">Q1</span>
+                    <span id="questionType" class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-semibold">Multiple Choice</span>
+                </div>
+                
+                <h3 id="questionText" class="text-2xl font-bold text-white mb-8">Loading question...</h3>
+                
+                <div id="optionsContainer" class="space-y-4">
+                    <!-- Options will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between">
+                <button id="prevBtn" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50" disabled>
+                    <i class="fas fa-arrow-left mr-2"></i>Previous
+                </button>
+                <button id="nextBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                    Next<i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submitBtn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors hidden">
+                    Submit Quiz<i class="fas fa-check ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div id="results" class="max-w-4xl mx-auto hidden">
+            <div class="glass-effect rounded-xl p-8 text-center fade-in">
+                <i id="resultIcon" class="text-6xl mb-4"></i>
+                <h2 id="resultTitle" class="text-3xl font-bold text-white mb-4">Quiz Completed!</h2>
+                <div class="text-6xl font-bold text-white mb-4">
+                    <span id="finalScore">0%</span>
+                </div>
+                <p id="resultMessage" class="text-xl text-gray-200 mb-8">Great job on completing the quiz!</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <div class="bg-white/10 rounded-lg p-4">
+                        <div class="text-2xl font-bold text-green-400" id="correctCount">0</div>
+                        <div class="text-gray-200">Correct</div>
+                    </div>
+                    <div class="bg-white/10 rounded-lg p-4">
+                        <div class="text-2xl font-bold text-red-400" id="incorrectCount">0</div>
+                        <div class="text-gray-200">Incorrect</div>
+                    </div>
+                    <div class="bg-white/10 rounded-lg p-4">
+                        <div class="text-2xl font-bold text-blue-400" id="totalQuestions">0</div>
+                        <div class="text-gray-200">Total Questions</div>
+                    </div>
+                </div>
+
+                <div id="detailedResults" class="text-left mb-8">
+                    <!-- Detailed results will be inserted here -->
+                </div>
+
+                <div class="flex justify-center space-x-4">
+                    <button id="retakeBtn" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                        <i class="fas fa-redo mr-2"></i>Retake Quiz
+                    </button>
+                    <button id="newQuizBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                        <i class="fas fa-list mr-2"></i>Choose New Quiz
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class QuizApp {
+            constructor() {
+                this.quizzes = [];
+                this.currentQuiz = null;
+                this.currentQuestionIndex = 0;
+                this.answers = {};
+                this.userId = this.generateUserId();
+                this.init();
+            }
+
+            generateUserId() {
+                let userId = localStorage.getItem('quizUserId');
+                if (!userId) {
+                    userId = 'user_' + Math.random().toString(36).substr(2, 9);
+                    localStorage.setItem('quizUserId', userId);
+                }
+                return userId;
+            }
+
+            async init() {
+                await this.loadQuizzes();
+                this.setupEventListeners();
+                this.showQuizSelection();
+            }
+
+            async loadQuizzes() {
+                try {
+                    const response = await fetch('/api/quizzes');
+                    this.quizzes = await response.json();
+                } catch (error) {
+                    console.error('Error loading quizzes:', error);
+                }
+            }
+
+            setupEventListeners() {
+                document.getElementById('prevBtn').addEventListener('click', () => this.previousQuestion());
+                document.getElementById('nextBtn').addEventListener('click', () => this.nextQuestion());
+                document.getElementById('submitBtn').addEventListener('click', () => this.submitQuiz());
+                document.getElementById('retakeBtn').addEventListener('click', () => this.retakeQuiz());
+                document.getElementById('newQuizBtn').addEventListener('click', () => this.showQuizSelection());
+            }
+
+            showQuizSelection() {
+                document.getElementById('quizSelection').classList.remove('hidden');
+                document.getElementById('quizInterface').classList.add('hidden');
+                document.getElementById('results').classList.add('hidden');
+
+                const quizList = document.getElementById('quizList');
+                quizList.innerHTML = '';
+
+                this.quizzes.forEach(quiz => {
+                    const difficultyColor = {
+                        'Beginner': 'green',
+                        'Intermediate': 'blue',
+                        'Advanced': 'purple',
+                        'Expert': 'red'
+                    }[quiz.difficulty] || 'gray';
+
+                    const quizCard = document.createElement('div');
+                    quizCard.className = 'glass-effect rounded-xl p-6 cursor-pointer hover:scale-105 transition-transform';
+                    quizCard.innerHTML = `
+                        <div class="mb-4">
+                            <span class="bg-${difficultyColor}-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                ${quiz.difficulty}
+                            </span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">${quiz.title}</h3>
+                        <p class="text-gray-200 mb-4">${quiz.description}</p>
+                        <div class="flex items-center text-gray-300 text-sm">
+                            <i class="fas fa-clock mr-2"></i>
+                            <span>${quiz.estimatedTime}</span>
+                            <i class="fas fa-question-circle ml-4 mr-2"></i>
+                            <span>${quiz.questionCount} questions</span>
+                        </div>
+                    `;
+                    quizCard.addEventListener('click', () => this.startQuiz(quiz.id));
+                    quizList.appendChild(quizCard);
+                });
+            }
+
+            async startQuiz(quizId) {
+                try {
+                    const response = await fetch(`/api/quizzes/${quizId}`);
+                    this.currentQuiz = await response.json();
+                    this.currentQuestionIndex = 0;
+                    this.answers = {};
+                    
+                    document.getElementById('quizSelection').classList.add('hidden');
+                    document.getElementById('quizInterface').classList.remove('hidden');
+                    document.getElementById('results').classList.add('hidden');
+                    
+                    this.displayQuestion();
+                    this.updateProgress();
+                } catch (error) {
+                    console.error('Error starting quiz:', error);
+                }
+            }
+
+            displayQuestion() {
+                const question = this.currentQuiz.questions[this.currentQuestionIndex];
+                
+                document.getElementById('questionNumber').textContent = `Q${this.currentQuestionIndex + 1}`;
+                document.getElementById('questionType').textContent = this.getQuestionTypeText(question.type);
+                document.getElementById('questionText').textContent = question.question;
+                
+                const optionsContainer = document.getElementById('optionsContainer');
+                optionsContainer.innerHTML = '';
+
+                if (question.type === 'multiple-choice' || question.type === 'true-false') {
+                    question.options.forEach((option, index) => {
+                        const optionDiv = document.createElement('div');
+                        optionDiv.className = 'quiz-option bg-white/10 rounded-lg p-4 cursor-pointer hover:bg-white/20';
+                        optionDiv.innerHTML = `
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="answer" value="${index}" class="mr-3">
+                                <span class="text-white">${option}</span>
+                            </label>
+                        `;
+                        
+                        optionDiv.addEventListener('click', () => {
+                            document.querySelectorAll('input[name="answer"]').forEach(radio => radio.checked = false);
+                            optionDiv.querySelector('input').checked = true;
+                            this.selectOption(optionDiv, index);
+                        });
+                        
+                        optionsContainer.appendChild(optionDiv);
+                    });
+                } else if (question.type === 'multiple-select') {
+                    question.options.forEach((option, index) => {
+                        const optionDiv = document.createElement('div');
+                        optionDiv.className = 'quiz-option bg-white/10 rounded-lg p-4 cursor-pointer hover:bg-white/20';
+                        optionDiv.innerHTML = `
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" value="${index}" class="mr-3">
+                                <span class="text-white">${option}</span>
+                            </label>
+                        `;
+                        
+                        optionDiv.addEventListener('click', () => {
+                            const checkbox = optionDiv.querySelector('input');
+                            checkbox.checked = !checkbox.checked;
+                            this.selectOption(optionDiv, index);
+                        });
+                        
+                        optionsContainer.appendChild(optionDiv);
+                    });
+                }
+
+                // Restore previous answer if exists
+                const previousAnswer = this.answers[question.id];
+                if (previousAnswer !== undefined) {
+                    this.restoreAnswer(question, previousAnswer);
+                }
+
+                this.updateNavigationButtons();
+            }
+
+            getQuestionTypeText(type) {
+                const types = {
+                    'multiple-choice': 'Multiple Choice',
+                    'true-false': 'True or False',
+                    'multiple-select': 'Select All That Apply'
+                };
+                return types[type] || 'Question';
+            }
+
+            selectOption(element, index) {
+                const question = this.currentQuiz.questions[this.currentQuestionIndex];
+                
+                if (question.type === 'multiple-choice' || question.type === 'true-false') {
+                    document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
+                    element.classList.add('selected');
+                    this.answers[question.id] = index;
+                } else if (question.type === 'multiple-select') {
+                    element.classList.toggle('selected');
+                    const selected = Array.from(document.querySelectorAll('.quiz-option input:checked')).map(cb => parseInt(cb.value));
+                    this.answers[question.id] = selected;
+                }
+            }
+
+            restoreAnswer(question, answer) {
+                if (question.type === 'multiple-choice' || question.type === 'true-false') {
+                    const radio = document.querySelector(`input[value="${answer}"]`);
+                    if (radio) {
+                        radio.checked = true;
+                        radio.closest('.quiz-option').classList.add('selected');
+                    }
+                } else if (question.type === 'multiple-select' && Array.isArray(answer)) {
+                    answer.forEach(index => {
+                        const checkbox = document.querySelector(`input[value="${index}"]`);
+                        if (checkbox) {
+                            checkbox.checked = true;
+                            checkbox.closest('.quiz-option').classList.add('selected');
+                        }
+                    });
+                }
+            }
+
+            updateProgress() {
+                const progress = ((this.currentQuestionIndex + 1) / this.currentQuiz.questions.length) * 100;
+                document.getElementById('progressBar').style.width = `${progress}%`;
+                document.getElementById('progressText').textContent = `Question ${this.currentQuestionIndex + 1} of ${this.currentQuiz.questions.length}`;
+                
+                // Calculate current score
+                let correct = 0;
+                for (let i = 0; i <= this.currentQuestionIndex; i++) {
+                    const question = this.currentQuiz.questions[i];
+                    if (this.answers[question.id] !== undefined) {
+                        // This is a simplified check - actual validation happens on submit
+                        correct++;
+                    }
+                }
+                const currentScore = Math.round((correct / (this.currentQuestionIndex + 1)) * 100);
+                document.getElementById('scoreText').textContent = `Score: ${currentScore}%`;
+            }
+
+            updateNavigationButtons() {
+                const prevBtn = document.getElementById('prevBtn');
+                const nextBtn = document.getElementById('nextBtn');
+                const submitBtn = document.getElementById('submitBtn');
+
+                prevBtn.disabled = this.currentQuestionIndex === 0;
+                
+                if (this.currentQuestionIndex === this.currentQuiz.questions.length - 1) {
+                    nextBtn.classList.add('hidden');
+                    submitBtn.classList.remove('hidden');
+                } else {
+                    nextBtn.classList.remove('hidden');
+                    submitBtn.classList.add('hidden');
+                }
+            }
+
+            previousQuestion() {
+                if (this.currentQuestionIndex > 0) {
+                    this.currentQuestionIndex--;
+                    this.displayQuestion();
+                    this.updateProgress();
+                }
+            }
+
+            nextQuestion() {
+                if (this.currentQuestionIndex < this.currentQuiz.questions.length - 1) {
+                    this.currentQuestionIndex++;
+                    this.displayQuestion();
+                    this.updateProgress();
+                }
+            }
+
+            async submitQuiz() {
+                try {
+                    const response = await fetch(`/api/quizzes/${this.currentQuiz.id}/submit`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            answers: this.answers,
+                            userId: this.userId
+                        })
+                    });
+
+                    const result = await response.json();
+                    this.showResults(result);
+                } catch (error) {
+                    console.error('Error submitting quiz:', error);
+                }
+            }
+
+            showResults(result) {
+                document.getElementById('quizInterface').classList.add('hidden');
+                document.getElementById('results').classList.remove('hidden');
+
+                const passed = result.passed;
+                
+                document.getElementById('resultIcon').className = `fas ${passed ? 'fa-trophy text-yellow-400' : 'fa-times-circle text-red-400'} text-6xl mb-4`;
+                document.getElementById('resultTitle').textContent = passed ? 'Congratulations!' : 'Quiz Completed!';
+                document.getElementById('finalScore').textContent = `${result.score}%`;
+                document.getElementById('resultMessage').textContent = passed ? 
+                    'Excellent work! You\'ve mastered this topic.' : 
+                    'Good effort! Review the explanations below to improve.';
+                
+                document.getElementById('correctCount').textContent = result.correctAnswers;
+                document.getElementById('incorrectCount').textContent = result.totalQuestions - result.correctAnswers;
+                document.getElementById('totalQuestions').textContent = result.totalQuestions;
+
+                // Show detailed results
+                const detailedResults = document.getElementById('detailedResults');
+                detailedResults.innerHTML = '<h3 class="text-xl font-bold text-white mb-4">Detailed Results</h3>';
+                
+                result.results.forEach((result, index) => {
+                    const resultDiv = document.createElement('div');
+                    resultDiv.className = 'bg-white/10 rounded-lg p-4 mb-4';
+                    resultDiv.innerHTML = `
+                        <div class="flex items-start mb-2">
+                            <span class="bg-${result.correct ? 'green' : 'red'}-600 text-white px-2 py-1 rounded text-sm mr-2">
+                                ${result.correct ? 'Correct' : 'Incorrect'}
+                            </span>
+                            <span class="text-white font-semibold">Question ${index + 1}</span>
+                        </div>
+                        <p class="text-gray-200 mb-2">${result.question}</p>
+                        <div class="text-gray-300 text-sm">
+                            <strong>Explanation:</strong> ${result.explanation}
+                        </div>
+                    `;
+                    detailedResults.appendChild(resultDiv);
+                });
+            }
+
+            retakeQuiz() {
+                this.startQuiz(this.currentQuiz.id);
+            }
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new QuizApp();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "lab-rating-system",
+  "version": "1.0.0",
+  "description": "Automated difficulty rating system for Cloud Security Labs",
+  "main": "lab-rating-system.js",
+  "scripts": {
+    "analyze": "node lab-rating-system.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cloud-security",
+    "difficulty-rating",
+    "automation",
+    "labs"
+  ],
+  "author": "Cloud Security Labs Team",
+  "license": "MIT",
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
